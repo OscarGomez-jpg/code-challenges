@@ -28,30 +28,44 @@ async fn main() {
         vec![vec![true; total_divisions as usize]; total_divisions as usize];
 
     //Ant attributes
-    let mut pos_x = window_size / 2.;
-    let mut pos_y = window_size / 2.;
+    let mut pos_x = window_size / 2. + step / 2.;
+    let mut pos_y = window_size / 2. + step / 2.;
 
-    map[5][5] = false;
+    let mut play = false;
 
     loop {
         plot_grid(&step, &window_size, true);
         plot_grid(&step, &window_size, false);
 
-        //My eyes hurts right now
-        if map[(pos_y / step) as usize][(pos_x / step) as usize] {
-            map[(pos_y / step) as usize][(pos_x / step) as usize] = false;
-
-            dir += 1;
-            dir = dir % moves.len() as i32;
-        } else {
-            map[(pos_y / step) as usize][(pos_x / step) as usize] = true;
-
-            dir -= 1;
-            dir = dir.abs() % moves.len() as i32;
+        if is_key_pressed(KeyCode::Space) {
+            play = !play;
         }
 
-        pos_x += moves[dir as usize].0;
-        pos_y += moves[dir as usize].1;
+        if is_mouse_button_pressed(MouseButton::Left) {
+            let mpos = mouse_position();
+            map[(mpos.1 / step) as usize][(mpos.0 / step) as usize] =
+                !map[(mpos.1 / step) as usize][(mpos.0 / step) as usize];
+        }
+
+        if play {
+            //My eyes hurts right now
+            //right
+            if map[(pos_y / step) as usize][(pos_x / step) as usize] {
+                map[(pos_y / step) as usize][(pos_x / step) as usize] = false;
+
+                dir += 1;
+                dir = dir % moves.len() as i32;
+            //left
+            } else {
+                map[(pos_y / step) as usize][(pos_x / step) as usize] = true;
+
+                dir -= 1;
+                dir = dir.abs() % moves.len() as i32;
+            }
+
+            pos_x += moves[dir as usize].0;
+            pos_y += moves[dir as usize].1;
+        }
 
         for i in 0..map.len() {
             for j in 0..map[0].len() {
@@ -63,7 +77,7 @@ async fn main() {
             }
         }
 
-        draw_circle(pos_x, pos_y, 20., RED);
+        draw_rectangle(pos_x, pos_y, step, step, RED);
 
         next_frame().await;
     }

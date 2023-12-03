@@ -28,8 +28,8 @@ async fn main() {
         vec![vec![true; total_divisions as usize]; total_divisions as usize];
 
     //Ant attributes
-    let mut pos_x = window_size / 2. + step / 2.;
-    let mut pos_y = window_size / 2. + step / 2.;
+    let mut pos_x = window_size / 2.;
+    let mut pos_y = window_size / 2.;
 
     let mut play = false;
 
@@ -50,6 +50,10 @@ async fn main() {
         if play {
             //My eyes hurts right now
             //right
+
+            pos_x += moves[dir as usize].0;
+            pos_y += moves[dir as usize].1;
+
             if map[(pos_y / step) as usize][(pos_x / step) as usize] {
                 map[(pos_y / step) as usize][(pos_x / step) as usize] = false;
 
@@ -62,9 +66,6 @@ async fn main() {
                 dir -= 1;
                 dir = dir.abs() % moves.len() as i32;
             }
-
-            pos_x += moves[dir as usize].0;
-            pos_y += moves[dir as usize].1;
         }
 
         for i in 0..map.len() {

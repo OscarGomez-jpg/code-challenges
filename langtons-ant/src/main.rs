@@ -25,7 +25,7 @@ async fn main() {
     let mut dir: i32 = 1;
 
     let mut map: Vec<Vec<bool>> =
-        vec![vec![true; total_divisions as usize]; total_divisions as usize];
+        vec![vec![false; total_divisions as usize]; total_divisions as usize];
 
     //Ant attributes
     let mut pos_x = window_size / 2.;
@@ -37,34 +37,32 @@ async fn main() {
         plot_grid(&step, &window_size, true);
         plot_grid(&step, &window_size, false);
 
-        if is_key_pressed(KeyCode::Space) {
+        if is_key_down(KeyCode::Space) {
             play = !play;
         }
 
         if is_mouse_button_pressed(MouseButton::Left) {
             let mpos = mouse_position();
-            map[(mpos.1 / step) as usize][(mpos.0 / step) as usize] =
-                !map[(mpos.1 / step) as usize][(mpos.0 / step) as usize];
+            map[((mpos.1 / step).floor()) as usize][((mpos.0 / step).floor()) as usize] =
+                !map[((mpos.1 / step).floor()) as usize][((mpos.0 / step).floor()) as usize];
         }
 
         if play {
             //My eyes hurts right now
-            //right
 
+            //right
             pos_x += moves[dir as usize].0;
             pos_y += moves[dir as usize].1;
 
-            if map[(pos_y / step) as usize][(pos_x / step) as usize] {
-                map[(pos_y / step) as usize][(pos_x / step) as usize] = false;
+            if map[((pos_y / step).floor()) as usize][((pos_x / step).floor()) as usize] {
+                map[((pos_y / step).floor()) as usize][((pos_x / step).floor()) as usize] = false;
 
-                dir += 1;
-                dir = dir % moves.len() as i32;
+                dir = (dir + 1) % moves.len() as i32;
             //left
             } else {
-                map[(pos_y / step) as usize][(pos_x / step) as usize] = true;
+                map[((pos_y / step).floor()) as usize][((pos_x / step).floor()) as usize] = true;
 
-                dir -= 1;
-                dir = dir.abs() % moves.len() as i32;
+                dir = (dir - 1 + moves.len() as i32) % moves.len() as i32;
             }
         }
 

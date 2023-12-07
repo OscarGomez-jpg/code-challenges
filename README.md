@@ -5,3 +5,19 @@ This repo was created to have fun with diverse and interesting challenges using 
 However, I want to make an honorific mention to [The Coding Train](https://www.youtube.com/@TheCodingTrain) YouTube channel as it is the place
 
 where I get most of the topics.
+
+
+Challenges finished:
+- Basic world
+- image-to-ascii
+- langston-ant
+- lorenz-attractor
+- phyllotaxis
+- solar-system
+- ten-print
+- ulam-spirals
+
+Unfinished challenges:
+- binary-tree
+- dither
+- quadtree

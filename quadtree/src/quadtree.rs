@@ -10,7 +10,7 @@ impl Point {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Boundary {
     pub x: f32,
     pub y: f32,
@@ -28,6 +28,13 @@ impl Boundary {
             && point.x <= self.x + self.w
             && point.y >= self.y
             && point.y <= self.y + self.h;
+    }
+
+    pub fn intersects(&self, range: Boundary) -> bool {
+        return !(range.x - range.w > self.x + self.w
+            || range.x + range.w < self.x - self.w
+            || range.y - range.h > self.y + self.h
+            || range.y + range.h < self.y - self.h);
     }
 }
 
@@ -76,29 +83,69 @@ impl Quadtree {
         self.divided = true;
     }
 
-    pub fn insert(&mut self, point: Point) {
+    pub fn insert(&mut self, point: Point) -> bool {
         if !self.boundary.contains(point) {
-            return;
+            return false;
         }
 
         // println!("Hi with point {:?}, from {:?}", point, self.boundary);
 
         if self.points.len() < self.capacity {
             self.points.push(point);
+            return true;
         } else {
             if !self.divided {
                 self.subdivide();
             }
 
-            self.northeast.as_mut().unwrap().insert(point);
-            self.northwest.as_mut().unwrap().insert(point);
-            self.southeast.as_mut().unwrap().insert(point);
-            self.southwest.as_mut().unwrap().insert(point);
+            if self.northeast.as_mut().unwrap().insert(point) {
+                return true;
+            } else if self.northwest.as_mut().unwrap().insert(point) {
+                return true;
+            } else if self.southeast.as_mut().unwrap().insert(point) {
+                return true;
+            } else {
+                self.southwest.as_mut().unwrap().insert(point);
+                return true;
+            }
         }
 
         // println!("points len: {}", self.points.len());
     }
 
+    pub fn query(&mut self, range: Boundary) -> Vec<Point> {
+        let mut found: Vec<Point> = Vec::new();
+
+        if !self.boundary.intersects(range) {
+            return found;
+        } else {
+            for point in &self.points {
+                if range.contains(*point) {
+                    found.push(*point);
+                }
+            }
+
+            if self.divided {
+                if let Some(nw) = self.northwest.as_deref_mut() {
+                    found.append(&mut nw.query(range));
+                }
+                if let Some(ne) = self.northeast.as_deref_mut() {
+                    found.append(&mut ne.query(range));
+                }
+                if let Some(sw) = self.southwest.as_deref_mut() {
+                    found.append(&mut sw.query(range));
+                }
+                if let Some(se) = self.southeast.as_deref_mut() {
+                    found.append(&mut se.query(range));
+                }
+            }
+
+            return found;
+        }
+    }
+
+    /// This function receives and mutates a Vec<(f32, f32, f32, f32)> and returns
+    /// the entire tree subdivisions in it
     pub fn show(&mut self, res: &mut Vec<(f32, f32, f32, f32)>) {
         res.push((
             self.boundary.x,

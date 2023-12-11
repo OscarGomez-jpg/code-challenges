@@ -2,8 +2,8 @@ use macroquad::{miniquad::window::set_window_size, prelude::*};
 
 #[macroquad::main("Phyllositaxis")]
 async fn main() {
-    //I'm currently trying nvim, so this implementation is not
-    //entirerly mine
+    //I'm currently trying nvim, and used this project to
+    //practice, so this implementation is not entirerly mine
     let total_dots = 500.;
     let scaling_pattern = 12.;
     let special_angle = 137.5;

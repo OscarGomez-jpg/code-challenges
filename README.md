@@ -16,8 +16,8 @@ Challenges finished:
 - solar-system
 - ten-print
 - ulam-spirals
+- quadtree
 
 Unfinished challenges:
 - binary-tree
 - dither
-- quadtree

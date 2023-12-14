@@ -142,8 +142,17 @@ async fn main() {
 
         let mut last = attractor.path[0];
         for node in &attractor.path {
-            draw_line_3d(last, *node, WHITE);
-            draw_sphere(*node, 0.2, None, WHITE);
+            draw_line_3d(
+                last,
+                *node,
+                Color {
+                    r: node.x.abs() / 30. % 256.,
+                    g: node.y.abs() / 30. % 256.,
+                    b: node.z.abs() / 30. % 256.,
+                    a: 1.,
+                },
+            );
+            // draw_sphere(*node, 0.2, None, WHITE);
             last = *node;
         }
 

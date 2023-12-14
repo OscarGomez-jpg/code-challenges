@@ -1,10 +1,10 @@
 [package]
-name = "basic-world"
+name = "agario"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rand = "0.8.5"
 macroquad = "0.4.4"
+rand = "0.8.5"

@@ -1,7 +1,7 @@
 use macroquad::{
     prelude::{Color, BLUE, BROWN, GRAY, GREEN, WHITE},
     shapes::draw_rectangle,
-    window::{clear_background, next_frame, request_new_screen_size, screen_height, screen_width},
+    window::{clear_background, next_frame, request_new_screen_size},
 };
 use rand::Rng;
 
@@ -13,9 +13,11 @@ pub mod matrix;
 async fn main() {
     let mut rng = rand::thread_rng();
     let matrix_size = 20;
-    request_new_screen_size(600 as f32, 600 as f32);
-    let div_x = screen_width() / matrix_size as f32;
-    let div_y = screen_height() / matrix_size as f32;
+    let window_width = 800.;
+    let window_height = 800.;
+    request_new_screen_size(window_width, window_height);
+    let div_x = window_width / matrix_size as f32;
+    let div_y = window_height / matrix_size as f32;
 
     let mut garden = Garden::new(matrix_size);
     for i in 0..matrix_size {

@@ -18,6 +18,7 @@ Challenges finished:
 - ten-print
 - ulam-spirals
 - quadtree
+- basic attractor
 
 Unfinished challenges:
 

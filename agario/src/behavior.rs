@@ -1,5 +1,3 @@
-use crate::ball::Ball;
-
 pub trait Updatable {
     fn update(&mut self);
 }

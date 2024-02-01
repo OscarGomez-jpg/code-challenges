@@ -4,9 +4,9 @@ use macroquad::{miniquad::window::set_window_size, prelude::*};
 async fn main() {
     //I'm currently trying nvim, and used this project to
     //practice, so this implementation is not entirerly mine
-    let total_dots = 500.;
+    let total_dots = 600.;
     let scaling_pattern = 12.;
-    let special_angle = 137.5;
+    let special_angle: f32 = 137.5;
 
     set_window_size(600, 600);
     let window_size = 600.;
@@ -14,7 +14,7 @@ async fn main() {
     let mut circles: Vec<(f32, f32, f32)> = Vec::new();
 
     for i in 0..(total_dots) as i32 {
-        let a = i as f32 * special_angle;
+        let a = i as f32 * special_angle.to_radians();
         let r = scaling_pattern * (i as f32).sqrt();
 
         let x = r * a.cos() + window_size / 2.;

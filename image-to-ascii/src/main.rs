@@ -5,7 +5,7 @@ use macroquad::{miniquad::window::set_window_size, prelude::*};
 #[macroquad::main("Image to ascii")]
 async fn main() {
     let face = Image::from_file_with_format(
-        include_bytes!("..\\assets\\image.png"),
+        include_bytes!("../assets/image.png"),
         Some(ImageFormat::Png),
     )
     .unwrap();

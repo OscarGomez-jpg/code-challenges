@@ -1,4 +1,4 @@
-use std::{intrinsics::bitreverse, mem};
+use std::mem;
 
 use macroquad::prelude::*;
 
@@ -37,7 +37,7 @@ fn interleave_bits_64(x: u64, y: u64) -> u64 {
 #[macroquad::main("Dither")]
 async fn main() {
     let mut image = Image::from_file_with_format(
-        include_bytes!("..\\assets\\image (1).png"),
+        include_bytes!("../assets/image (1).png"),
         Some(ImageFormat::Png),
     )
     .unwrap();

@@ -7,29 +7,12 @@ use macroquad::{
     text::draw_text,
     window::{clear_background, next_frame, screen_height, screen_width},
 };
+use plant::Plant;
 use quadtree::{Boundary, Point, Quadtree};
 use rand::Rng;
 
+pub mod plant;
 pub mod quadtree;
-
-#[derive(Debug, Clone)]
-struct Plant {
-    id: String,
-    shape: Circle,
-    life_time: usize,
-    near_plants: usize,
-}
-
-impl Plant {
-    fn new(id: String, shape: Circle, life_time: usize) -> Self {
-        Self {
-            id,
-            shape,
-            life_time,
-            near_plants: 0,
-        }
-    }
-}
 
 fn duplicate(index: &mut i32, plant: &Plant) -> Plant {
     let mut rng = ::rand::thread_rng();
@@ -45,34 +28,11 @@ fn duplicate(index: &mut i32, plant: &Plant) -> Plant {
     )
 }
 
-#[macroquad::main("Garden management")]
-async fn main() {
-    let mut qt = Quadtree::new(Boundary::new(0., 0., screen_width(), screen_height()), 4);
-    let mut rng = ::rand::thread_rng();
-    let mut plants: HashMap<String, Plant> = HashMap::new();
-    let mut to_add: Vec<String> = Vec::new();
-    let mut to_remove: Vec<String> = Vec::new();
-    let mut is_day = true;
-    let mut hour: f32 = 0.;
-
-    let mut boundaries: Vec<Boundary> = Vec::new();
-    let boundary_step_h = screen_width() / 12.;
-    let boundary_step_v = screen_height() / 12.;
-    for i in 0..(boundary_step_h as usize) {
-        for j in 0..(boundary_step_v as usize) {
-            let check_boundary = Boundary::new(
-                i as f32 * screen_width(),
-                j as f32 * screen_height(),
-                boundary_step_h,
-                boundary_step_v,
-            );
-
-            boundaries.push(check_boundary);
-        }
-    }
-
+fn create_random_plants(total: i32) -> HashMap<String, Plant> {
     let mut index = 0;
-    while index < 15 {
+    let mut rng = ::rand::thread_rng();
+    let mut plants = HashMap::new();
+    while index < total {
         let plant = Plant::new(
             index.to_string(),
             Circle::new(
@@ -83,12 +43,51 @@ async fn main() {
             rng.gen_range(100..1000),
         );
 
-        let mut point = Point::new(plant.shape.x, plant.shape.y);
-        point.id = index.to_string();
-        plants.insert(index.to_string(), plant);
-        qt.insert(point);
+        plants.insert(index.to_string(), plant.clone());
+
         index += 1;
     }
+
+    plants
+}
+
+fn add_plants_to_quadtree(plants: &HashMap<String, Plant>, qt: &mut Quadtree) {
+    for (index, plant) in plants {
+        let mut point = Point::new(plant.shape.x, plant.shape.y);
+        point.id = index.to_string();
+        qt.insert(point);
+    }
+}
+
+#[macroquad::main("Garden management")]
+async fn main() {
+    let total_plants = 15;
+
+    let mut qt = Quadtree::new(Boundary::new(0., 0., screen_width(), screen_height()), 4);
+    let mut rng = ::rand::thread_rng();
+    let mut to_add: Vec<String> = Vec::new();
+    let mut to_remove: Vec<String> = Vec::new();
+    let mut is_day = true;
+    let mut hour: f32 = 0.;
+    let mut index = 0;
+
+    let mut boundaries: Vec<Boundary> = Vec::new();
+    let boundary_step_h = screen_width() / 12.;
+    let boundary_step_v = screen_height() / 12.;
+    for i in 0..(boundary_step_h as usize) {
+        for j in 0..(boundary_step_v as usize) {
+            let check_boundary = Boundary::new(
+                i as f32 * boundary_step_h,
+                j as f32 * boundary_step_v,
+                boundary_step_h,
+                boundary_step_v,
+            );
+
+            boundaries.push(check_boundary);
+        }
+    }
+
+    let mut plants: HashMap<String, Plant> = create_random_plants(total_plants);
 
     loop {
         if is_day {
@@ -97,7 +96,7 @@ async fn main() {
             clear_background(BLACK);
         }
 
-        // println!("{:?}", plants);
+        add_plants_to_quadtree(&plants, &mut qt);
 
         for (id, plant) in plants.iter_mut() {
             if is_day {
@@ -117,7 +116,6 @@ async fn main() {
             }
 
             if plant.life_time >= 1500 {
-                // println!("Duplicating plant: {}", plant.id);
                 to_remove.push(id.to_string());
                 to_add.push(id.to_string());
             }
@@ -129,6 +127,7 @@ async fn main() {
                     for other in &others {
                         let point = Vec2::new(other.x, other.y);
                         if plant.shape.contains(&point) {
+                            plant.near_plants += 1;
                             //Think an update method, based on certains modifications coming from
                             //an enum, then I should not have any problems related to mutability
                             // let other_plant = plants.get(&other.id).unwrap();

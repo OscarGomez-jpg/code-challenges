@@ -52,7 +52,29 @@ async fn main() {
         for j in 0..image.height() {
             let mut act_pixel = image.get_pixel(j as u32, i as u32);
 
-            let pixel_value = interleave_bits_64(j, i);
+            let pixel_value = interleave_bits_64(j as u64, i as u64);
+
+            // Convert the interleaved value to a threshold.
+            let threshold = (pixel_value % m_size) as f32 / m_size as f32;
+
+            // Convert the pixel to grayscale.
+            let gray = 0.299 * act_pixel.r as f32
+                + 0.587 * act_pixel.g as f32
+                + 0.114 * act_pixel.b as f32;
+
+            // Apply the threshold.
+            if gray < threshold {
+                act_pixel.r = 0.;
+                act_pixel.g = 0.;
+                act_pixel.b = 0.;
+            } else {
+                act_pixel.r = 255.;
+                act_pixel.g = 255.;
+                act_pixel.b = 255.;
+            }
+
+            // Set the pixel back to the image.
+            image.set_pixel(j as u32, i as u32, act_pixel);
         }
     }
 

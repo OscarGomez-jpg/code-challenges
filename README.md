@@ -19,10 +19,15 @@ Challenges finished:
 - ulam-spirals
 - quadtree
 - basic attractor
+- dither
+- elementary cellular automata
 
 Unfinished challenges:
 
 - maze-generator
 - agario
 - binary-tree
-- dither
+- snake
+- attractor
+- garden management
+- random squares

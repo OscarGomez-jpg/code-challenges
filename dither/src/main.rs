@@ -1,3 +1,4 @@
+use image::{ImageBuffer, Rgba};
 use std::mem;
 
 use macroquad::prelude::*;
@@ -15,7 +16,7 @@ fn _bytes_as_binary<T: std::fmt::Binary>(value: T) -> String {
     binary_string
 }
 
-fn interleave_bits_64(x: u64, y: u64) -> u64 {
+fn interleave_bits(x: u32, y: u32) -> u32 {
     let mut result = 0;
 
     //println!("x: {}", bytes_as_binary(x));
@@ -46,13 +47,13 @@ async fn main() {
 
     //assert_eq!(0b10101010, interleave_bits_64(0b0000, 0b1111));
 
-    let m_size: u64 = 8;
+    let m_size: u32 = 8;
 
     for i in 0..image.width() {
         for j in 0..image.height() {
             let mut act_pixel = image.get_pixel(j as u32, i as u32);
 
-            let pixel_value = interleave_bits_64(j as u64, i as u64);
+            let pixel_value = interleave_bits(j as u32, i as u32);
 
             // Convert the interleaved value to a threshold.
             let threshold = (pixel_value % m_size) as f32 / m_size as f32;
@@ -77,6 +78,19 @@ async fn main() {
             image.set_pixel(j as u32, i as u32, act_pixel);
         }
     }
+
+    // Convert the image to an ImageBuffer and save it to a file.
+    let mut imgbuf = ImageBuffer::new(image.width() as u32, image.height() as u32);
+    for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
+        let macroquad_pixel = image.get_pixel(x, y);
+        *pixel = Rgba([
+            (macroquad_pixel.r * 255.0) as u8,
+            (macroquad_pixel.g * 255.0) as u8,
+            (macroquad_pixel.b * 255.0) as u8,
+            (macroquad_pixel.a * 255.0) as u8,
+        ]);
+    }
+    imgbuf.save("output.png").unwrap();
 
     let face = Texture2D::from_image(&image);
 

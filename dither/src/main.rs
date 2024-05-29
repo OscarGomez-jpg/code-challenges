@@ -38,7 +38,7 @@ fn interleave_bits(x: u32, y: u32) -> u32 {
 #[macroquad::main("Dither")]
 async fn main() {
     let mut image = Image::from_file_with_format(
-        include_bytes!("../assets/image (1).png"),
+        include_bytes!("../assets/actual.png"),
         Some(ImageFormat::Png),
     )
     .unwrap();

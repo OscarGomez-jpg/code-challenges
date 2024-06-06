@@ -177,6 +177,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "maplit"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3e2e65a1a2e43cfcb47a895c4c8b10d1f4a61097f9f254f183aee60cad9c651d"
+
+[[package]]
+name = "marching-squares"
+version = "0.1.0"
+dependencies = [
+ "macroquad",
+ "maplit",
+ "rand",
+]
+
+[[package]]
 name = "miniquad"
 version = "0.4.0-alpha.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -299,14 +314,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
  "getrandom",
-]
-
-[[package]]
-name = "random-squares"
-version = "0.1.0"
-dependencies = [
- "macroquad",
- "rand",
 ]
 
 [[package]]

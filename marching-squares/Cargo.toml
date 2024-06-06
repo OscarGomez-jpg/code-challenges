@@ -1,5 +1,5 @@
 [package]
-name = "random-squares"
+name = "marching-squares"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 macroquad = "0.4.4"
+maplit = "1.0.2"
 rand = "0.8.5"

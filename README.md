@@ -7,6 +7,9 @@ However, I want to make an honorific mention to
 [The Coding Train](https://www.youtube.com/@TheCodingTrain) YouTube channel as
 it is the place where I get most of the topics.
 
+Any of this codes can be runned by positioning on the folder of the desire project
+and typing `cargo run` (Rust lang must be installed before!)
+
 Challenges finished:
 
 - Basic world

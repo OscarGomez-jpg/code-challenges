@@ -21,6 +21,7 @@ Challenges finished:
 - basic attractor
 - dither
 - elementary cellular automata
+- marching-squares
 
 Unfinished challenges:
 
@@ -30,4 +31,3 @@ Unfinished challenges:
 - snake
 - attractor
 - garden management
-- random squares

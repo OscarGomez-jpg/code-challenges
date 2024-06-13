@@ -1,56 +1,59 @@
-use macroquad::prelude::*;
+use macroquad::{prelude::*, telemetry::disable};
 
-fn generate_points(root: &Vec2, is_h: bool) -> (Vec2, Vec2) {
-    if is_h {
-        (
-            vec2(root.x - root.x / 8.0, root.y),
-            vec2(root.x + root.x / 8.0, root.y),
-        )
-    } else {
-        (
-            vec2(root.x, root.y - root.y / 8.0),
-            vec2(root.x, root.y + root.y / 8.0),
-        )
-    }
-}
-
-fn make_tree(tree: &mut Vec<(Vec2, Vec2)>, depth: i32, is_h: bool) {
-    if depth - 1 <= 0 {
+fn make_tree(points: &mut Vec<(Vec2, Vec2)>, hor: bool, orig: Vec2, deepnest: usize, len: f32) {
+    if deepnest == 0 {
         return;
     }
 
-    let root = tree.len() - 1;
+    let spacing = 2.;
 
-    let (first, second) = generate_points(&tree[root].0, is_h);
-    tree.push((first, second));
+    let new_points = if hor {
+        (
+            vec2(orig.x - len / spacing, orig.y),
+            vec2(orig.x + len / spacing, orig.y),
+        )
+    } else {
+        (
+            vec2(orig.x, orig.y - len / spacing),
+            vec2(orig.x, orig.y + len / spacing),
+        )
+    };
 
-    let (first, second) = generate_points(&tree[root].1, is_h);
-    tree.push((first, second));
+    points.push(new_points);
 
-    make_tree(tree, depth - 1, !is_h);
-    make_tree(tree, depth - 1, !is_h);
+    let distance = new_points.0.distance(new_points.1);
+
+    make_tree(points, !hor, new_points.0, deepnest - 1, distance);
+    make_tree(points, !hor, new_points.1, deepnest - 1, distance);
 }
 
 #[macroquad::main("Binary tree")]
 async fn main() {
-    let first: Vec2 = vec2(
-        screen_width() / 2.,
-        screen_height() / 2. + screen_height() / 4.,
-    );
-    let second: Vec2 = vec2(
-        screen_width() / 2.,
-        screen_height() / 2. - screen_height() / 4.,
-    );
-    let mut tree: Vec<(Vec2, Vec2)> = Vec::new();
-    tree.push((first, second));
+    let mut points = Vec::new();
+    make_tree(&mut points, true, Vec2::new(300., 300.), 10, 50.);
 
-    make_tree(&mut tree, 5, true);
-
-    //println!("{:?}", tree);
+    // for point in &points {
+    //     println!(
+    //         "x1: {} x2: {} y1: {} y2: {}",
+    //         point.0.x, point.1.x, point.0.y, point.1.y
+    //     );
+    // }
 
     loop {
-        for set in &tree {
-            draw_line(set.0.x, set.0.y, set.1.x, set.1.y, 1.1, WHITE);
+        for point in &points {
+            draw_line(
+                point.0.x,
+                point.0.y,
+                point.1.x,
+                point.1.y,
+                2.,
+                Color {
+                    r: point.0.x / 600.,
+                    g: point.1.x / 600.,
+                    b: 0.1,
+                    a: 1.,
+                },
+            );
         }
 
         next_frame().await;

@@ -1,4 +1,4 @@
-use macroquad::{prelude::*, telemetry::disable};
+use macroquad::prelude::*;
 
 fn make_tree(points: &mut Vec<(Vec2, Vec2)>, hor: bool, orig: Vec2, deepnest: usize, len: f32) {
     if deepnest == 0 {
@@ -22,22 +22,29 @@ fn make_tree(points: &mut Vec<(Vec2, Vec2)>, hor: bool, orig: Vec2, deepnest: us
     points.push(new_points);
 
     let distance = new_points.0.distance(new_points.1);
+    let punishment = 3.;
 
-    make_tree(points, !hor, new_points.0, deepnest - 1, distance);
-    make_tree(points, !hor, new_points.1, deepnest - 1, distance);
+    make_tree(
+        points,
+        !hor,
+        new_points.0,
+        deepnest - 1,
+        distance - distance / punishment,
+    );
+    make_tree(
+        points,
+        !hor,
+        new_points.1,
+        deepnest - 1,
+        distance - distance / punishment,
+    );
 }
 
 #[macroquad::main("Binary tree")]
 async fn main() {
+    request_new_screen_size(600., 600.);
     let mut points = Vec::new();
-    make_tree(&mut points, true, Vec2::new(300., 300.), 10, 50.);
-
-    // for point in &points {
-    //     println!(
-    //         "x1: {} x2: {} y1: {} y2: {}",
-    //         point.0.x, point.1.x, point.0.y, point.1.y
-    //     );
-    // }
+    make_tree(&mut points, true, Vec2::new(300., 300.), 10, 250.);
 
     loop {
         for point in &points {
@@ -48,8 +55,8 @@ async fn main() {
                 point.1.y,
                 2.,
                 Color {
-                    r: point.0.x / 600.,
-                    g: point.1.x / 600.,
+                    r: (point.0.x + point.1.x) / 600.,
+                    g: (point.0.y + point.1.y) / 600.,
                     b: 0.1,
                     a: 1.,
                 },

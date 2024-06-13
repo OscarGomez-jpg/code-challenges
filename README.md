@@ -25,12 +25,12 @@ Challenges finished:
 - dither
 - elementary cellular automata
 - marching-squares
+- binary-tree
 
 Unfinished challenges:
 
 - maze-generator
 - agario
-- binary-tree
 - snake
 - attractor
 - garden management

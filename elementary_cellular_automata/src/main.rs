@@ -55,7 +55,7 @@ async fn main() {
 
     loop {
         let mut y = 0.;
-        for i in 0..cells_matrix.len() {
+        (0..cells_matrix.len()).for_each(|i| {
             let mut x;
             for j in 0..cells_matrix[i].len() {
                 x = j as f32 * CELL_SIZE;
@@ -65,7 +65,7 @@ async fn main() {
                 draw_rectangle(x, y, CELL_SIZE, CELL_SIZE, color);
             }
             y += CELL_SIZE;
-        }
+        });
 
         if frame == 1 && (cells_matrix.len() as f32) < (SCREEN_HEIGHT / CELL_SIZE) {
             // println!("CellM lines: {}", cells_matrix.len());

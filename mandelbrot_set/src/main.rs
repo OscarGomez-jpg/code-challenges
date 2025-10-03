@@ -1,7 +1,6 @@
 use macroquad::{
     color::{self, Color},
-    math::Circle,
-    shapes::{draw_circle_lines, draw_rectangle},
+    shapes::draw_rectangle,
     window::{self, next_frame},
 };
 
